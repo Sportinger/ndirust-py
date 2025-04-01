@@ -19,13 +19,19 @@ fn test_binding() -> PyResult<bool> {
     Ok(true)
 }
 
-/// A Python module implemented in Rust.
+/// A Python module implemented in Rust for NewTek NDI.
+///
+/// This module provides access to NDI functionality for sending and receiving
+/// video, audio, and metadata over a network.
 #[pymodule]
 fn ndirust_py(_py: Python, m: &PyModule) -> PyResult<()> {
     // Add core functions
     m.add_function(wrap_pyfunction!(get_version_info, m)?)?;
     m.add_function(wrap_pyfunction!(test_binding, m)?)?;
 
+    // Add documentation
+    m.add("__doc__", "NewTek NDI Python bindings implemented in Rust")?;
+    
     // Add submodules
     let discovery_module = PyModule::new(_py, "discovery")?;
     discovery::register_discovery_functions(discovery_module)?;
@@ -38,6 +44,9 @@ fn ndirust_py(_py: Python, m: &PyModule) -> PyResult<()> {
     let sender_module = PyModule::new(_py, "sender")?;
     sender::register_sender_functions(sender_module)?;
     m.add_submodule(sender_module)?;
+    
+    // Add utility functions directly to the module
+    utils::register_utility_functions(m)?;
 
     // Add module-level attributes
     let sys = PyModule::import(_py, "sys")?;

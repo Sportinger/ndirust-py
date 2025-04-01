@@ -1,1 +1,1 @@
-searchState.loadedDescShard("ndirust_py", 0, "")
+searchState.loadedDescShard("ndirust_py", 0, "A Python module implemented in Rust.\nPython class representing an NDI finder\nPython class representing an NDI source\nFree resources associated with the finder\nFind all current NDI sources on the network\nReturns the argument unchanged.\nReturns the argument unchanged.\nCalls <code>U::from(self)</code>.\nCalls <code>U::from(self)</code>.\nInternal source handle\nRegister discovery-related Python functions and classes")
