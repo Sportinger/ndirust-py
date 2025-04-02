@@ -37,25 +37,109 @@ impl NdiSender {
         }
     }
 
-    /// Send a video frame placeholder (this is a simplified version)
-    #[pyo3(signature = (width=1280, height=720))]
-    fn send_test_pattern(&self, width: u32, height: u32) -> PyResult<()> {
+    /// Send a test pattern video frame
+    /// 
+    /// Args:
+    ///     width: Width of the test pattern (default: 1280)
+    ///     height: Height of the test pattern (default: 720)
+    ///     fps_n: Framerate numerator (default: 30)
+    ///     fps_d: Framerate denominator (default: 1)
+    #[pyo3(signature = (width=1280, height=720, fps_n=30, fps_d=1))]
+    fn send_test_pattern(&self, width: u32, height: u32, fps_n: u32, fps_d: u32) -> PyResult<()> {
         let sender = match &self.sender {
             Some(s) => s,
             None => return Err(PyRuntimeError::new_err("Sender is not initialized")),
         };
         
-        // Create a simple color test pattern
-        let mut data = vec![0u8; (width * height * 2) as usize]; // UYVY format
-        for i in 0..data.len() {
-            data[i] = (i % 255) as u8;  // Simple pattern
+        // Create a simple color test pattern in UYVY format (2 bytes per pixel)
+        let data_size = (width * height * 2) as usize;
+        let mut data = vec![0u8; data_size];
+        
+        // Create a colorful test pattern
+        for y in 0..height {
+            for x in 0..width {
+                let index = ((y * width + x) * 2) as usize;
+                if index + 1 < data_size {
+                    // U and V values for color
+                    data[index] = ((x * 255) / width) as u8;     // U: blue-difference chroma
+                    data[index + 1] = ((y * 255) / height) as u8; // Y: luma
+                    // Additional Y and V values
+                    if x % 2 == 0 && index + 3 < data_size {
+                        data[index + 2] = 128;   // V: red-difference chroma
+                        data[index + 3] = 235;   // Y: luma (white)
+                    }
+                }
+            }
         }
         
-        // Create a video frame
-        let mut video = ndi::VideoData::new();
+        // Create a video frame using the VideoData::from_buffer method
+        let fourcc = ndi::FourCCVideoType::UYVY;
+        let frame_format = ndi::FrameFormatType::Progressive;
         
-        // Send the frame - this is simplified and may not work correctly
-        println!("Pretending to send test pattern - feature in development");
+        // Calculate stride (bytes per line)
+        let stride = (width * 2) as i32;  // 2 bytes per pixel for UYVY
+        
+        // Create video frame
+        let video_data = ndi::VideoData::from_buffer(
+            width as i32, 
+            height as i32,
+            fourcc,
+            fps_n as i32,
+            fps_d as i32,
+            frame_format,
+            0, // timecode
+            stride,
+            None, // metadata
+            &mut data
+        );
+        
+        // Send the frame
+        sender.send_video(&video_data);
+        
+        println!("Sent test pattern frame {}x{} @ {}/{} fps", width, height, fps_n, fps_d);
+        Ok(())
+    }
+    
+    /// Send custom video frame from raw byte data
+    /// 
+    /// Args:
+    ///     data: Raw video data bytes
+    ///     width: Width of the frame
+    ///     height: Height of the frame
+    ///     fps_n: Framerate numerator (default: 30)
+    ///     fps_d: Framerate denominator (default: 1)
+    #[pyo3(signature = (data, width, height, fps_n=30, fps_d=1))]
+    fn send_video_frame(&self, data: &PyBytes, width: u32, height: u32, fps_n: u32, fps_d: u32) -> PyResult<()> {
+        let sender = match &self.sender {
+            Some(s) => s,
+            None => return Err(PyRuntimeError::new_err("Sender is not initialized")),
+        };
+        
+        // Extract bytes from PyBytes
+        let mut py_bytes = Python::with_gil(|_py| {
+            let bytes = data.as_bytes();
+            bytes.to_vec()
+        });
+        
+        // Calculate stride (bytes per line)
+        let stride = (width * 2) as i32;  // 2 bytes per pixel for UYVY
+        
+        // Create video frame
+        let video_data = ndi::VideoData::from_buffer(
+            width as i32, 
+            height as i32,
+            ndi::FourCCVideoType::UYVY,
+            fps_n as i32,
+            fps_d as i32,
+            ndi::FrameFormatType::Progressive,
+            0, // timecode
+            stride,
+            None, // metadata
+            &mut py_bytes
+        );
+        
+        // Send the frame
+        sender.send_video(&video_data);
         
         Ok(())
     }
