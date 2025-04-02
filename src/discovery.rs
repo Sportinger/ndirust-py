@@ -61,10 +61,10 @@ impl NdiFinder {
             None => return Err(PyRuntimeError::new_err("Finder is not initialized")),
         };
         
-        // Get current sources with timeout converted to a Duration
+        // Get current sources with timeout
         let wait_ms = timeout_ms.unwrap_or(1000); // Default to 1 second timeout
-        let timeout = Duration::from_millis(wait_ms as u64);
-        let sources_result = finder.current_sources(timeout);
+        // current_sources expects a u128 value in milliseconds
+        let sources_result = finder.current_sources(wait_ms as u128);
         
         // Convert to Python list
         let py_list = PyList::empty(py);
