@@ -1,11 +1,11 @@
 # ndirust-py: Python NDI Bindings
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/python/cpython/main/Tools/demo/sortvisu/python.png" height="100">
+  <img src="https://www.python.org/static/community_logos/python-logo-generic.svg" height="100">
   &nbsp;&nbsp;&nbsp;&nbsp;
   <img src="https://raw.githubusercontent.com/rust-lang/rust-artwork/master/logo/rust-logo-512x512.png" height="100">
   &nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="https://ndi.tv/wp-content/uploads/2023/09/ndi-logo.png" height="100">
+  <img src="https://cdn.icon-icons.com/icons2/2699/png/512/ndi_logo_icon_169584.png" height="100">
 </div>
 
 <div align="center">
