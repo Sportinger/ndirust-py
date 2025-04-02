@@ -27,16 +27,18 @@
 
 ---
 
-This project provides Python bindings for NewTek's NDI® (Network Device Interface) technology using Rust via PyO3.
+## Overview
+
+ndirust-py provides Python bindings for NewTek's NDI® (Network Device Interface) technology, leveraging Rust's performance and safety. The library enables Python applications to discover, send, and receive NDI video streams with minimal overhead.
 
 ## Features
 
-- ✅ NDI initialization check
+- ✅ Cross-platform NDI integration
 - ✅ Source discovery on the network
-- ✅ Video frame sending
-- ✅ Video frame receiving with full support for video, audio and metadata
-- ✅ GUI example with live NDI preview
-- 🎁 Bundled NDI SDK DLLs - no separate installation needed!
+- ✅ Video frame sending with customizable parameters
+- ✅ Video, audio, and metadata receiving with full type support
+- ✅ Ready-to-use bundled NDI runtime (Windows)
+- ✅ GUI preview application with stream selection
 
 ## Requirements
 
@@ -47,15 +49,13 @@ This project provides Python bindings for NewTek's NDI® (Network Device Interfa
 
 ### Simple Installation
 
-The package includes the necessary NDI runtime libraries, so you can simply install it with pip:
+The package includes the necessary NDI runtime libraries for Windows, so you can simply install it with pip:
 
 ```bash
 pip install ndirust-py
 ```
 
-And you're ready to go! No need to download the NDI SDK separately.
-
-> **Platform Support Note**: Currently, the package includes bundled DLLs for Windows only. macOS and Linux users will still need to install the NDI SDK separately. We plan to add support for these platforms in future versions.
+> **Platform Support Note**: Currently, the package includes bundled DLLs for Windows only. macOS and Linux users will still need to install the NDI SDK separately.
 
 ### From Source
 
@@ -65,11 +65,11 @@ git clone https://github.com/yourusername/ndirust-py.git
 cd ndirust-py
 
 # Install build dependencies
-pip install maturin
+pip install -r requirements.txt
 
 # Build and install the package
-maturin build --release
-pip install target/wheels/ndirust_py-0.1.0-*.whl
+python build_wheel.py
+pip install dist/ndirust_py-0.1.0-*.whl
 ```
 
 ## Examples
@@ -247,19 +247,30 @@ python examples/ndi_gui_preview.py
 - Metadata Frames (`NdiMetadataFrame`):
   - Properties: `timecode`, `data`
 
-## Project Status
+## Roadmap
 
-This project is in active development but all major features are now implemented:
+The following features are planned for future releases:
 
-- ✅ Frame discovery
-- ✅ Video sending
-- ✅ Video receiving 
-- ✅ Audio receiving
-- ✅ Metadata receiving
+- **NDI HX Support**: Integration with NDI High Efficiency codec for compressed streams
+- **Standalone Monitor Application**: Enhanced version of the GUI preview as a standalone tool
+- **macOS and Linux DLL Bundling**: Include runtime libraries for all major platforms
+- **Advanced Audio Features**: Better control over audio channel mapping and processing
+- **Custom Metadata API**: Simplified interface for working with NDI metadata
+- **Performance Optimizations**: Further Rust optimizations for resource-intensive operations
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgements
 
