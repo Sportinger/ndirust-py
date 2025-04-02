@@ -1,10 +1,10 @@
-# Rust
+# Rust build artifacts and dependencies
 /target/
 **/*.rs.bk
 Cargo.lock
-# Don't ignore Cargo.lock for binaries, but this is a library
+/ndi/
 
-# Python
+# Python build artifacts and caches
 __pycache__/
 *.py[cod]
 *$py.class
@@ -28,10 +28,36 @@ wheels/
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Virtual environments
 .venv/
 venv/
 ENV/
 env/
+.python-version
+
+# IDE configuration files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+.project
+.pydevproject
+.settings/
+*.sublime-*
+.ipynb_checkpoints/
+
+# Temporary and extraction files
+temp_extract/
+test_extract/
+*.tmp
+*.bak
+*.log
+
+# Generated documentation
+/doc/
+/docs/
 
 # IDE
 .idea/
@@ -42,10 +68,6 @@ env/
 
 # NDI specific
 *.ndi
-
-# Generated documentation
-/doc/
-/docs/
 
 # Temporary files
 temp_extract/

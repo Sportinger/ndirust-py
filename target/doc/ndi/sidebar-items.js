@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["FourCCAudioType","FourCCVideoType","FrameFormatType","FrameType"],"fn":["cleanup","initialize","is_supported_CPU"],"mod":["error","find","recv","send"],"struct":["AudioData","MetaData","Source","Tally","VideoData"]};

@@ -1,1 +1,0 @@
-C:\Users\admin\Desktop\ndirust-py\target\debug\ndirust_py.dll: C:\Users\admin\Desktop\ndirust-py\src\discovery.rs C:\Users\admin\Desktop\ndirust-py\src\lib.rs C:\Users\admin\Desktop\ndirust-py\src\receiver.rs C:\Users\admin\Desktop\ndirust-py\src\sender.rs C:\Users\admin\Desktop\ndirust-py\src\utils.rs

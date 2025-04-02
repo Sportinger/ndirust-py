@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"struct":["FindCreateError","FindSourcesTimeout","InvalidEnum","NotSupported","RecvCreateError","SendCreateError"]};

@@ -1,2 +1,0 @@
-window.ALL_CRATES = ["cfg_if","heck","indoc","libc","lock_api","memoffset","ndi","ndirust_py","once_cell","parking_lot","parking_lot_core","portable_atomic","proc_macro2","pyo3","pyo3_build_config","pyo3_ffi","pyo3_macros","pyo3_macros_backend","quote","scopeguard","smallvec","syn","target_lexicon","unicode_ident","unindent","windows_targets","windows_x86_64_msvc"];
-//{"start":21,"fragment_lengths":[8,7,8,7,11,12,6,13,12,14,19,18,14,7,20,11,14,22,8,13,11,6,17,16,11,18,22]}
