@@ -27,35 +27,48 @@
 
 ---
 
-This project provides Python bindings for NewTek's NDI® (Network Device Interface) technology using Rust via PyO3.
+This project provides Python bindings for NewTek's NDI® (Network Device Interface) technology using Rust via PyO3. With these bindings, you can easily discover, send, and receive NDI streams in your Python applications with high performance.
 
 ## Features
 
-- ✅ NDI initialization check
-- ✅ Source discovery on the network
-- ✅ Video frame sending
-- ✅ Video frame receiving with full support for video, audio and metadata
-- ✅ GUI example with live NDI preview
-- 🎁 Bundled NDI SDK DLLs - no separate installation needed!
+- ✅ **NDI Source Discovery** - Find all NDI sources on your network
+- ✅ **Video Frame Sending** - Send video frames to the network
+- ✅ **Complete Receiver Support** - Receive video, audio, and metadata frames
+- ✅ **GUI Preview Tool** - Ready-to-use visual monitor for NDI streams
+- 🎁 **Bundled NDI Runtime** - No separate SDK installation needed on Windows
+- 🔒 **Type-Safe API** - Leveraging Rust's safety with Python's ease of use
+- ⚡ **High Performance** - Rust implementation for optimal efficiency
 
-## Requirements
+## Quick Start
 
-- Python 3.7 or higher
-- [NDI SDK](https://ndi.tv/tools/) (optional for Windows users, required for macOS/Linux)
+```python
+import ndirust_py
+
+# Initialize NDI
+ndirust_py.initialize_ndi()
+
+# Find sources
+finder = ndirust_py.discovery.NdiFinder()
+sources = finder.find_sources(timeout_ms=1000)
+
+print(f"Found {len(sources)} NDI sources:")
+for source in sources:
+    print(f"- {source}")
+
+finder.close()
+```
 
 ## Installation
 
 ### Simple Installation
 
-The package includes the necessary NDI runtime libraries, so you can simply install it with pip:
-
 ```bash
 pip install ndirust-py
 ```
 
-And you're ready to go! No need to download the NDI SDK separately.
+That's it! On Windows, the package includes the necessary NDI runtime libraries.
 
-> **Platform Support Note**: Currently, the package includes bundled DLLs for Windows only. macOS and Linux users will still need to install the NDI SDK separately. We plan to add support for these platforms in future versions.
+> **Platform Support Note**: Currently, the package includes bundled DLLs for Windows only. macOS and Linux users will need to install the NDI SDK separately. We plan to add support for these platforms in future versions.
 
 ### From Source
 
@@ -72,14 +85,14 @@ maturin build --release
 pip install target/wheels/ndirust_py-0.1.0-*.whl
 ```
 
-## Examples
+## Requirements
+
+- Python 3.7 or higher
+- [NDI SDK](https://ndi.tv/tools/) (optional for Windows users, required for macOS/Linux)
+
+## Usage Examples
 
 The repository includes several example scripts in the `examples` directory:
-
-- `ndi_finder_example.py`: Demonstrates how to find NDI sources on the network
-- `ndi_sender_example.py`: Shows how to send NDI video frames
-- `ndi_receiver_example.py`: Shows how to receive and process NDI frames
-- `ndi_gui_preview.py`: **GUI application** for previewing NDI video streams with source selection
 
 ### Finding NDI Sources
 
@@ -180,13 +193,22 @@ finder.close()
 
 ### GUI Preview Example
 
-The GUI preview example demonstrates a complete application that:
-- Discovers NDI sources on the network
-- Allows selection from available sources
-- Displays the video stream in real-time
-- Shows performance statistics
+The GUI preview tool provides a full-featured application for monitoring NDI sources:
 
-To run the GUI example:
+<div align="center">
+  <p><i>GUI Preview: NDI video stream preview application with source selection</i></p>
+  <p><i>(Screenshot will be added here)</i></p>
+</div>
+
+Features:
+- Real-time discovery of NDI sources on your network
+- Source selection dropdown with refresh capability
+- Live video preview with proper aspect ratio
+- Frame rate and performance statistics
+- Automatic reconnection on source change
+- Clean resource handling
+
+To run the example:
 
 ```bash
 # Install required dependencies
@@ -195,11 +217,6 @@ pip install pillow numpy
 # Run the example
 python examples/ndi_gui_preview.py
 ```
-
-<div align="center">
-  <p><i>GUI Preview: NDI video stream preview application with source selection</i></p>
-  <p><i>(Screenshot will be added here)</i></p>
-</div>
 
 ## API Documentation
 
@@ -247,15 +264,27 @@ python examples/ndi_gui_preview.py
 - Metadata Frames (`NdiMetadataFrame`):
   - Properties: `timecode`, `data`
 
-## Project Status
+## Limitations and Future Plans
 
-This project is in active development but all major features are now implemented:
+### Current Limitations
 
-- ✅ Frame discovery
-- ✅ Video sending
-- ✅ Video receiving 
-- ✅ Audio receiving
-- ✅ Metadata receiving
+- **NDI HX Not Supported**: This library currently supports standard NDI only, not the compressed NDI HX variant which requires additional codec support
+- **Windows-only Bundled DLLs**: The bundled NDI runtime is currently available for Windows only
+- **No PTZ Camera Controls**: PTZ (Pan-Tilt-Zoom) camera control features are not yet implemented
+
+### Future Development Plans
+
+- **Enhanced Preview Monitor**: We're working on a more advanced preview monitor with features such as:
+  - Multiple source viewing (matrix view)
+  - Audio level meters
+  - Recording capabilities
+  - Metadata inspection
+  - Customizable layouts and themes
+  
+- **Platform Support**: Adding bundled runtime libraries for macOS and Linux
+- **NDI HX Support**: Adding support for compressed NDI HX streams
+- **Performance Optimizations**: Further optimizing the Rust code for maximum performance
+- **Advanced Features**: Adding support for NDI routing, groups, and other advanced features
 
 ## License
 
