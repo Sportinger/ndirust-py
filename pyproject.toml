@@ -1,0 +1,39 @@
+[build-system]
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "ndirust-py"
+version = "0.1.0"
+description = "Python bindings for NewTek NDI using Rust"
+readme = "README.md"
+requires-python = ">=3.7"
+license = {file = "LICENSE"}
+authors = [
+    {name = "NDI Rust Python Bindings Team", email = "your_email@example.com"}
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Rust",
+    "Topic :: Multimedia :: Video",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+keywords = ["ndi", "video", "rust", "bindings"]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/ndirust-py"
+Repository = "https://github.com/yourusername/ndirust-py"
+Issues = "https://github.com/yourusername/ndirust-py/issues"
+
+[tool.maturin]
+python-source = "python"
+features = ["pyo3/extension-module"]
+include = ["python/ndirust_py/bin/**/*"]
+module-name = "ndirust_py.ndirust_py" 

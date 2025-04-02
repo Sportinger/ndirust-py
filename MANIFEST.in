@@ -1,0 +1,5 @@
+include LICENSE
+include README.md
+include python/ndirust_py/*.py
+include python/ndirust_py/py.typed
+recursive-include python/ndirust_py/bin * 
