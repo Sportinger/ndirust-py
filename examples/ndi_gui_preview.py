@@ -11,12 +11,14 @@ This example demonstrates how to:
 Requirements:
 - tkinter (included with most Python installations)
 - pillow (pip install pillow)
+- numpy (pip install numpy)
 """
 
 import os
 import sys
 import time
 import threading
+import queue
 import tkinter as tk
 from tkinter import ttk
 import numpy as np
@@ -33,6 +35,12 @@ except ImportError as e:
     print(f"Error importing ndirust_py module: {e}")
     print("Make sure you have installed the ndirust-py package.")
     sys.exit(1)
+
+# Configuration constants for performance tuning
+MAX_FPS = 30  # Target max FPS - limits processing load
+FRAME_SKIP = 2  # Process 1 out of every N frames
+QUEUE_SIZE = 2  # Frame queue size - limits memory usage
+RESIZE_QUALITY = Image.NEAREST  # Faster resizing (options: NEAREST, BILINEAR, BICUBIC)
 
 class NdiPreviewApp:
     def __init__(self, root):
@@ -56,6 +64,11 @@ class NdiPreviewApp:
         self.frame_count = 0
         self.start_time = time.time()
         self.fps = 0
+        self.last_update_time = 0
+        self.skip_counter = 0
+        
+        # Create a queue for frames to avoid blocking UI
+        self.frame_queue = queue.Queue(maxsize=QUEUE_SIZE)
         
         # Set up the GUI
         self.setup_ui()
@@ -67,6 +80,9 @@ class NdiPreviewApp:
         # Start the receiver thread
         self.receiver_thread = threading.Thread(target=self.receive_frames, daemon=True)
         self.receiver_thread.start()
+        
+        # Start the display update timer
+        self.update_display()
         
         # Start the stats update timer
         self.root.after(1000, self.update_stats)
@@ -111,6 +127,9 @@ class NdiPreviewApp:
         
         # Initial message
         self.canvas.create_text(640, 400, text="Waiting for NDI source...", fill="white", font=("Arial", 20))
+        
+        # For double buffering
+        self.current_photo = None
     
     def discover_sources(self):
         """Thread function to periodically discover NDI sources."""
@@ -159,6 +178,10 @@ class NdiPreviewApp:
                         self.frame_count = 0
                         self.start_time = time.time()
                         self.status_var.set(f"Status: Connected to {selected}")
+                        
+                        # Clear any queued frames
+                        with self.frame_queue.mutex:
+                            self.frame_queue.queue.clear()
                     break
     
     def refresh_sources(self):
@@ -179,6 +202,7 @@ class NdiPreviewApp:
         """Thread function to receive NDI frames from the selected source."""
         receiver_initialized = False
         connected_source_name = None
+        frame_skip_counter = 0
         
         while self.running:
             try:
@@ -205,12 +229,21 @@ class NdiPreviewApp:
                     
                     # Receive a frame if connected
                     if receiver_initialized:
+                        # We'll always receive frames to keep the connection alive
                         frame_type, frame = self.receiver.receive_frame(timeout_ms=100)
                         
-                        # If we got a video frame, display it
+                        # If we got a video frame, process it
                         if int(frame_type) == 1 and frame is not None:  # Video frame
                             self.frame_count += 1
-                            self.update_video_frame(frame)
+                            
+                            # Skip frames based on counter to limit processing load
+                            frame_skip_counter += 1
+                            if frame_skip_counter >= FRAME_SKIP:
+                                frame_skip_counter = 0
+                                
+                                # Only add to queue if there's space
+                                if not self.frame_queue.full():
+                                    self.frame_queue.put_nowait(frame)
                 else:
                     time.sleep(0.1)  # No source selected, wait a bit
             
@@ -224,6 +257,27 @@ class NdiPreviewApp:
                     self.receiver = None
                     receiver_initialized = False
     
+    def update_display(self):
+        """Process the next frame from the queue if available."""
+        try:
+            # Only process a new frame if we aren't flooding the UI
+            current_time = time.time()
+            time_since_last_update = current_time - self.last_update_time
+            min_frame_time = 1.0 / MAX_FPS
+            
+            # If it's time for a new frame and we have one
+            if time_since_last_update >= min_frame_time and not self.frame_queue.empty():
+                frame = self.frame_queue.get_nowait()
+                self.update_video_frame(frame)
+                self.last_update_time = current_time
+        except queue.Empty:
+            pass  # No frames to process
+        except Exception as e:
+            print(f"Error updating display: {e}")
+        
+        # Schedule next update
+        self.root.after(10, self.update_display)
+        
     def update_video_frame(self, frame):
         """Convert NDI frame to an image and display it on the canvas."""
         try:
@@ -240,20 +294,27 @@ class NdiPreviewApp:
                 width = frame.width
                 height = frame.height
                 
-                # Convert bytes to numpy array
+                # Convert bytes to numpy array - much faster
                 buffer = np.frombuffer(frame_bytes, dtype=np.uint8)
                 
                 # Reshape to an image array
                 if format_name == "BGRA":
-                    # BGRA to RGBA conversion
-                    img_array = buffer.reshape((height, width, 4))[:, :, [2, 1, 0, 3]]
+                    # BGRA to RGBA conversion - simpler approach to avoid read-only error
+                    img_array = buffer.reshape((height, width, 4))
+                    # Create a copy before modification
+                    img_array = img_array.copy()
+                    # Swap R and B channels
+                    b = img_array[:, :, 0].copy()
+                    r = img_array[:, :, 2].copy()
+                    img_array[:, :, 0] = r
+                    img_array[:, :, 2] = b
                 else:
                     img_array = buffer.reshape((height, width, 4))
                 
-                # Create PIL Image from array
+                # Create PIL Image from array (this is unavoidable)
                 img = Image.fromarray(img_array, 'RGBA')
                 
-                # Scale image to fit canvas (if needed)
+                # Only resize if necessary
                 canvas_width = self.canvas.winfo_width()
                 canvas_height = self.canvas.winfo_height()
                 
@@ -267,13 +328,14 @@ class NdiPreviewApp:
                     new_height = int(height * scale)
                     
                     if new_width != width or new_height != height:
-                        img = img.resize((new_width, new_height), Image.LANCZOS)
+                        # Use faster resizing method
+                        img = img.resize((new_width, new_height), RESIZE_QUALITY)
                 
-                # Convert to Tkinter PhotoImage
+                # Convert to Tkinter PhotoImage (create once and reuse if possible)
                 photo = ImageTk.PhotoImage(img)
                 
                 # Update canvas on main thread
-                self.root.after(0, lambda p=photo: self._update_canvas_image(p))
+                self._update_canvas_image(photo)
         except Exception as e:
             print(f"Error updating video frame: {e}")
     
@@ -294,7 +356,7 @@ class NdiPreviewApp:
         self.canvas.create_image(x, y, anchor=tk.NW, image=photo)
         
         # Keep a reference to prevent garbage collection
-        self.canvas.image = photo
+        self.current_photo = photo
     
     def update_stats(self):
         """Update performance statistics."""

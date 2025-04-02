@@ -196,7 +196,7 @@ python examples/ndi_gui_preview.py
 
 <div align="center">
   <p><i>GUI Preview: NDI video stream preview application with source selection</i></p>
-  <p><i>(Screenshot will be added here)</i></p>
+  <img src="./images/ndi-preview-screenshot.png" alt="NDI Preview Screenshot" width="800">
 </div>
 
 ## API Documentation
