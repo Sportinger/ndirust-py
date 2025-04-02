@@ -13,15 +13,13 @@
 </div>
 
 <p align="center">
-  <a href="https://github.com/yourusername/ndirust-py/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/yourusername/ndirust-py?color=blue" alt="License">
+  <a href="./LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT">
   </a>
   <a href="https://pypi.org/project/ndirust-py/">
     <img src="https://img.shields.io/badge/python-3.7+-blue.svg" alt="Python Version">
   </a>
-  <a href="https://github.com/yourusername/ndirust-py/actions">
-    <img src="https://img.shields.io/github/workflow/status/yourusername/ndirust-py/Build%20and%20Test?label=build" alt="Build Status">
-  </a>
+  <img src="https://img.shields.io/badge/status-beta-yellow" alt="Status: Beta">
   <img src="https://img.shields.io/badge/NDI-Compatible-brightgreen" alt="NDI Compatible">
 </p>
 
@@ -33,12 +31,12 @@ ndirust-py provides Python bindings for NewTek's NDI® (Network Device Interface
 
 ## Features
 
-- ✅ Cross-platform NDI integration
 - ✅ Source discovery on the network
 - ✅ Video frame sending with customizable parameters
 - ✅ Video, audio, and metadata receiving with full type support
-- ✅ Ready-to-use bundled NDI runtime (Windows)
+- ✅ Ready-to-use bundled NDI runtime (Windows only)
 - ✅ GUI preview application with stream selection
+- ❓ Cross-platform NDI integration (Windows fully supported, macOS/Linux partial)
 
 ## Requirements
 
@@ -251,12 +249,12 @@ python examples/ndi_gui_preview.py
 
 The following features are planned for future releases:
 
-- **NDI HX Support**: Integration with NDI High Efficiency codec for compressed streams
-- **Standalone Monitor Application**: Enhanced version of the GUI preview as a standalone tool
-- **macOS and Linux DLL Bundling**: Include runtime libraries for all major platforms
-- **Advanced Audio Features**: Better control over audio channel mapping and processing
-- **Custom Metadata API**: Simplified interface for working with NDI metadata
-- **Performance Optimizations**: Further Rust optimizations for resource-intensive operations
+- ❓ **NDI HX Support**: Integration with NDI High Efficiency codec for compressed streams
+- ❓ **Standalone Monitor Application**: Enhanced version of the GUI preview as a standalone tool
+- ❓ **macOS and Linux DLL Bundling**: Include runtime libraries for all major platforms
+- ❓ **Advanced Audio Features**: Better control over audio channel mapping and processing
+- ❓ **Custom Metadata API**: Simplified interface for working with NDI metadata
+- ❓ **Performance Optimizations**: Further Rust optimizations for resource-intensive operations
 
 ## Contributing
 
