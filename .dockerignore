@@ -1,0 +1,32 @@
+# Development environment
+.git/
+.github/
+.venv/
+venv/
+target/
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+**/.Python
+**/*.so
+**/.coverage
+**/.pytest_cache
+**/.mypy_cache
+
+# Build artifacts
+dist/
+*.egg-info/
+**/build/
+
+# IDE files
+.idea/
+.vscode/
+**/.DS_Store
+
+# Documentation
+docs/
+
+# Temp files
+temp_extract/
+test_extract/ 

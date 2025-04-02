@@ -1,0 +1,85 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install maturin pytest pillow numpy
+    
+    - name: Build package
+      run: |
+        maturin build --release
+    
+    - name: List built wheels
+      run: |
+        python -c "import glob; print(glob.glob('target/wheels/*.whl'))"
+    
+    - name: Install built package
+      run: |
+        python -m pip install target/wheels/*.whl --force-reinstall
+    
+    - name: Test import
+      run: |
+        python -c "import ndirust_py; print(f'Version: {ndirust_py.__version__}')"
+    
+    - name: Upload wheels
+      uses: actions/upload-artifact@v3
+      with:
+        name: wheels-${{ matrix.os }}-${{ matrix.python-version }}
+        path: target/wheels/*.whl
+
+  # Optional deployment job
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+    
+    - name: Download all wheels
+      uses: actions/download-artifact@v3
+      with:
+        path: dist/
+    
+    - name: Move all wheels to dist directory
+      run: |
+        mkdir -p dist
+        find . -name "*.whl" -exec mv {} dist/ \;
+    
+    - name: Publish to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        user: __token__
+        password: ${{ secrets.PYPI_API_TOKEN }}
+        skip_existing: true 

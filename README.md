@@ -1,5 +1,32 @@
 # ndirust-py: Python NDI Bindings
 
+<div align="center">
+  <img src="https://raw.githubusercontent.com/python/cpython/main/Tools/demo/sortvisu/python.png" height="100">
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="https://raw.githubusercontent.com/rust-lang/rust-artwork/master/logo/rust-logo-512x512.png" height="100">
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="https://ndi.tv/wp-content/uploads/2023/09/ndi-logo.png" height="100">
+</div>
+
+<div align="center">
+  <h3>High-performance Python bindings for NDI® technology using Rust</h3>
+</div>
+
+<p align="center">
+  <a href="https://github.com/yourusername/ndirust-py/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/yourusername/ndirust-py?color=blue" alt="License">
+  </a>
+  <a href="https://pypi.org/project/ndirust-py/">
+    <img src="https://img.shields.io/badge/python-3.7+-blue.svg" alt="Python Version">
+  </a>
+  <a href="https://github.com/yourusername/ndirust-py/actions">
+    <img src="https://img.shields.io/github/workflow/status/yourusername/ndirust-py/Build%20and%20Test?label=build" alt="Build Status">
+  </a>
+  <img src="https://img.shields.io/badge/NDI-Compatible-brightgreen" alt="NDI Compatible">
+</p>
+
+---
+
 This project provides Python bindings for NewTek's NDI® (Network Device Interface) technology using Rust via PyO3.
 
 ## Features
@@ -8,12 +35,13 @@ This project provides Python bindings for NewTek's NDI® (Network Device Interfa
 - ✅ Source discovery on the network
 - ✅ Video frame sending
 - ✅ Video frame receiving with full support for video, audio and metadata
+- ✅ GUI example with live NDI preview
 - 🎁 Bundled NDI SDK DLLs - no separate installation needed!
 
 ## Requirements
 
 - Python 3.7 or higher
-- [NDI SDK](https://ndi.tv/tools/) installed on your system
+- [NDI SDK](https://ndi.tv/tools/) (optional for Windows users, required for macOS/Linux)
 
 ## Installation
 
@@ -26,6 +54,8 @@ pip install ndirust-py
 ```
 
 And you're ready to go! No need to download the NDI SDK separately.
+
+> **Platform Support Note**: Currently, the package includes bundled DLLs for Windows only. macOS and Linux users will still need to install the NDI SDK separately. We plan to add support for these platforms in future versions.
 
 ### From Source
 
@@ -42,17 +72,19 @@ maturin build --release
 pip install target/wheels/ndirust_py-0.1.0-*.whl
 ```
 
-## Using ndirust-py
+## Examples
+
+The repository includes several example scripts in the `examples` directory:
+
+- `ndi_finder_example.py`: Demonstrates how to find NDI sources on the network
+- `ndi_sender_example.py`: Shows how to send NDI video frames
+- `ndi_receiver_example.py`: Shows how to receive and process NDI frames
+- `ndi_gui_preview.py`: **GUI application** for previewing NDI video streams with source selection
 
 ### Finding NDI Sources
 
 ```python
-import os
 import ndirust_py
-
-# Ensure NDI SDK DLL is in the PATH
-ndi_sdk_path = r"C:\Program Files\NDI\NDI 6 SDK\Bin\x64"  # Adjust path as needed
-os.environ["PATH"] = ndi_sdk_path + os.pathsep + os.environ["PATH"]
 
 # Initialize NDI
 ndirust_py.initialize_ndi()
@@ -74,13 +106,8 @@ finder.close()
 ### Sending NDI Video
 
 ```python
-import os
 import time
 import ndirust_py
-
-# Ensure NDI SDK DLL is in the PATH
-ndi_sdk_path = r"C:\Program Files\NDI\NDI 6 SDK\Bin\x64"  # Adjust path as needed
-os.environ["PATH"] = ndi_sdk_path + os.pathsep + os.environ["PATH"]
 
 # Initialize NDI
 ndirust_py.initialize_ndi()
@@ -150,6 +177,29 @@ print(f"Received {frame_count} frames in 10 seconds")
 receiver.close()
 finder.close()
 ```
+
+### GUI Preview Example
+
+The GUI preview example demonstrates a complete application that:
+- Discovers NDI sources on the network
+- Allows selection from available sources
+- Displays the video stream in real-time
+- Shows performance statistics
+
+To run the GUI example:
+
+```bash
+# Install required dependencies
+pip install pillow numpy
+
+# Run the example
+python examples/ndi_gui_preview.py
+```
+
+<div align="center">
+  <p><i>GUI Preview: NDI video stream preview application with source selection</i></p>
+  <p><i>(Screenshot will be added here)</i></p>
+</div>
 
 ## API Documentation
 

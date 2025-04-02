@@ -10,10 +10,10 @@ readme = "README.md"
 requires-python = ">=3.7"
 license = {file = "LICENSE"}
 authors = [
-    {name = "NDI Rust Python Bindings Team", email = "your_email@example.com"}
+    {name = "NDI Rust Python Bindings Team"}
 ]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
@@ -21,19 +21,21 @@ classifiers = [
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Programming Language :: Rust",
     "Topic :: Multimedia :: Video",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-keywords = ["ndi", "video", "rust", "bindings"]
+keywords = ["ndi", "video", "broadcast", "streaming", "rust"]
 
 [project.urls]
-Homepage = "https://github.com/yourusername/ndirust-py"
-Repository = "https://github.com/yourusername/ndirust-py"
+Documentation = "https://github.com/yourusername/ndirust-py"
+Source = "https://github.com/yourusername/ndirust-py"
 Issues = "https://github.com/yourusername/ndirust-py/issues"
 
 [tool.maturin]
 python-source = "python"
+module-name = "ndirust_py"
+bindings = "pyo3"
 features = ["pyo3/extension-module"]
-include = ["python/ndirust_py/bin/**/*"]
-module-name = "ndirust_py.ndirust_py" 
+include = ["python/ndirust_py/bin/**/*"] 

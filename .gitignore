@@ -1,5 +1,6 @@
 # Rust
 /target/
+**/*.rs.bk
 Cargo.lock
 # Don't ignore Cargo.lock for binaries, but this is a library
 
@@ -9,10 +10,6 @@ __pycache__/
 *$py.class
 *.so
 .Python
-.venv/
-venv/
-ENV/
-env/
 build/
 develop-eggs/
 dist/
@@ -28,6 +25,13 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+ENV/
+env/
 
 # IDE
 .idea/
@@ -41,4 +45,9 @@ wheels/
 
 # Generated documentation
 /doc/
-/docs/ 
+/docs/
+
+# Temporary files
+temp_extract/
+test_extract/
+*.tmp 

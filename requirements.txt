@@ -1,0 +1,6 @@
+# Core dependencies for development
+maturin>=1.0,<2.0
+
+# Dependencies for examples
+pillow>=9.0.0
+numpy>=1.20.0 
