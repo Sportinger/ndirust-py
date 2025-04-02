@@ -1,11 +1,11 @@
 # ndirust-py: Python NDI Bindings
 
 <div align="center">
-  <img src="images/Rust.png" height="100">
+  <img src="./images/rust-logo.png" alt="Rust Logo" height="100">
   &nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="images/ndi.png" height="100">
+  <img src="./images/ndi-logo.png" alt="NDI Logo" height="100">
   &nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="images/Python Icon.png" height="100">
+  <img src="./images/python-logo.png" alt="Python Logo" height="100">
 </div>
 
 <div align="center">
